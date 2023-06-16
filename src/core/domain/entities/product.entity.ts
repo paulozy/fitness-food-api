@@ -1,3 +1,5 @@
+import { InvalidProductCodeError } from '../@errors/invalid-product-code-error';
+
 interface ProductProps {
   code: number;
   status: string;
@@ -54,6 +56,18 @@ export class Product {
   }
 
   public static create(props: ProductProps): Product {
+    if (!Product.validate(props)) {
+      throw new InvalidProductCodeError(props.code);
+    }
+
     return new Product(props);
+  }
+
+  public static validate(props: ProductProps): boolean {
+    if (!props.code) {
+      return false;
+    }
+
+    return true;
   }
 }
