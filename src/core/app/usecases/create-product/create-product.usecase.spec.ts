@@ -51,4 +51,10 @@ describe('Create Product UseCase', () => {
 
     expect(await productRepository.list()).toHaveLength(1);
   });
+
+  it('should not be possible create a product with empty code', async () => {
+    await expect(
+      createProductUseCase.execute({ ...payload, code: undefined }),
+    ).rejects.toThrow('Invalid product code "undefined"');
+  });
 });
