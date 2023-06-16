@@ -44,4 +44,11 @@ describe('Create Product UseCase', () => {
     expect(products).toHaveLength(1);
     expect(products[0]).toEqual(payload);
   });
+
+  it('should not be possible create a product with same code', async () => {
+    await createProductUseCase.execute(payload);
+    await createProductUseCase.execute(payload);
+
+    expect(await productRepository.list()).toHaveLength(1);
+  });
 });
