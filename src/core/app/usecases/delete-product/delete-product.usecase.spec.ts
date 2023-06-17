@@ -43,4 +43,10 @@ describe('Delete Product UseCase', () => {
   it('should be possible delete a product on success', async () => {
     await expect(deleteProductUseCase.execute(123456)).resolves.not.toThrow();
   });
+
+  it('should be throw an error when product not found', async () => {
+    await expect(deleteProductUseCase.execute(123)).rejects.toThrow(
+      'Product with code "123" not found',
+    );
+  });
 });
