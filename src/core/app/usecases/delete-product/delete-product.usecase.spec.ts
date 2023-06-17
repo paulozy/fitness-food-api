@@ -42,6 +42,10 @@ describe('Delete Product UseCase', () => {
 
   it('should be possible delete a product on success', async () => {
     await expect(deleteProductUseCase.execute(123456)).resolves.not.toThrow();
+
+    const product = await productRepository.get(123456);
+
+    expect(product.status).toBe('trash');
   });
 
   it('should be throw an error when product not found', async () => {
