@@ -11,7 +11,15 @@ export class CreateProductUseCase {
       const productExists = await this.productRepository.exists(input.code);
 
       if (productExists) {
-        // send notification that product already exists
+        const product = await this.productRepository.get(input.code);
+
+        if (input.last_modified_t > product.last_modified_t) {
+          // send notification that product already exists (product "product.name" already exists on database, updating)
+          const productUpdated = Product.create(input);
+          await this.productRepository.save(productUpdated);
+          return;
+        }
+
         return;
       }
 
