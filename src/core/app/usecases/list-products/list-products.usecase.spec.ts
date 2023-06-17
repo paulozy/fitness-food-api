@@ -51,8 +51,15 @@ describe('List Products UseCase', () => {
   });
 
   it('should be possible list all products with pagination', async () => {
-    const products = await listProductsUseCase.execute({
+    let products = await listProductsUseCase.execute({
       page: 1,
+      limit: 5,
+    });
+
+    expect(products).toHaveLength(5);
+
+    products = await listProductsUseCase.execute({
+      page: 2,
       limit: 5,
     });
 
