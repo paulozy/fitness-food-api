@@ -1,5 +1,8 @@
 import { Product } from '@core/domain/entities/product.entity';
-import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
+import {
+  ListProductsInput,
+  ProductRepositoryInterface,
+} from '@core/domain/repositories/product-repository.interface';
 
 export class InMemoryProductRepository implements ProductRepositoryInterface {
   products: Product[] = [];
@@ -12,8 +15,11 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     this.products.push(product);
   }
 
-  async list(): Promise<Product[]> {
-    return this.products;
+  async list({ page, limit }: ListProductsInput): Promise<Product[]> {
+    const skip = (page - 1) * limit;
+    const take = skip + limit;
+
+    return this.products.slice(skip, take);
   }
 
   async get(code: number): Promise<Product> {
