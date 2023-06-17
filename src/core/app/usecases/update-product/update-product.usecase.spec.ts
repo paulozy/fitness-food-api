@@ -59,4 +59,13 @@ describe('Update Product UseCase', () => {
       }),
     );
   });
+
+  it('should not be possible update a product if not exists', async () => {
+    await expect(
+      updateProductUseCase.execute(999999, {
+        brands: 'Coca Cola',
+        categories: 'Bebidas',
+      }),
+    ).rejects.toThrowError('Product with code "999999" not found');
+  });
 });
