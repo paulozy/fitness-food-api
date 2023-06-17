@@ -11,4 +11,5 @@ export abstract class ProductRepositoryInterface {
   abstract list(data: ListProductsInput): Promise<Product[]>;
   abstract get(code: number): Promise<Product>;
   abstract save(product: Product): Promise<void>;
+  abstract delete(code: number): Promise<void>;
 }
