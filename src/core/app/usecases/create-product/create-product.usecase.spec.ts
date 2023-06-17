@@ -7,8 +7,6 @@ describe('Create Product UseCase', () => {
   let productRepository: ProductRepositoryInterface;
   const payload = {
     code: 123,
-    status: 'published',
-    imported_t: '2020-01-01',
     url: 'https://www.google.com',
     brands: 'Coca Cola',
     categories: 'Bebidas',
@@ -42,7 +40,13 @@ describe('Create Product UseCase', () => {
     const products = productRepository['products'];
 
     expect(products).toHaveLength(1);
-    expect(products[0]).toEqual(payload);
+    expect(products[0]).toEqual(
+      expect.objectContaining({
+        ...payload,
+        status: 'published',
+        imported_t: expect.any(String),
+      }),
+    );
   });
 
   it('should not be possible create a product with same code', async () => {
@@ -72,6 +76,12 @@ describe('Create Product UseCase', () => {
     const products = productRepository['products'];
 
     expect(products).toHaveLength(1);
-    expect(products[0]).toEqual(productUpdated);
+    expect(products[0]).toEqual(
+      expect.objectContaining({
+        ...productUpdated,
+        status: 'published',
+        imported_t: expect.any(String),
+      }),
+    );
   });
 });

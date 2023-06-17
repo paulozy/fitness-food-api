@@ -11,12 +11,9 @@ describe('Get Product UseCase', () => {
   beforeEach(() => {
     productRepository = new InMemoryProductRepository();
 
-    const status = Number(faker.random.numeric(2)) > 0 ? 'published' : 'draft';
     productRepository.create(
       Product.create({
         code: 123456,
-        status,
-        imported_t: faker.date.past().toISOString(),
         url: faker.internet.url(),
         brands: faker.commerce.productName(),
         categories: faker.commerce.productName(),

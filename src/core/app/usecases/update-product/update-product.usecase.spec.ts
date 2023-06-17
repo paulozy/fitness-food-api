@@ -14,8 +14,6 @@ describe('Update Product UseCase', () => {
 
     product = Product.create({
       code: 123456,
-      status: 'published',
-      imported_t: faker.date.past().toISOString(),
       url: faker.internet.url(),
       brands: faker.commerce.productName(),
       categories: faker.commerce.productName(),

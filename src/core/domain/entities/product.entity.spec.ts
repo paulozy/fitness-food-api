@@ -7,8 +7,6 @@ describe('Product Entity', () => {
 
     const product = Product.create({
       code: 123,
-      status: 'ok',
-      imported_t: '2020-01-01',
       url: 'https://www.google.com',
       brands: 'Coca Cola',
       categories: 'Bebidas',
@@ -34,8 +32,8 @@ describe('Product Entity', () => {
     expect(product).toBeInstanceOf(Product);
 
     expect(product.code).toBe(123);
-    expect(product.status).toBe('ok');
-    expect(product.imported_t).toBe('2020-01-01');
+    expect(product.status).toBe('published');
+    expect(product.imported_t).toBeDefined();
     expect(product.url).toBe('https://www.google.com');
     expect(product.brands).toBe('Coca Cola');
     expect(product.categories).toBe('Bebidas');
@@ -64,8 +62,6 @@ describe('Product Entity', () => {
 
     const product = Product.create({
       code: 123,
-      status: 'ok',
-      imported_t: '2020-01-01',
       url: 'https://www.google.com',
       brands: 'Coca Cola',
       categories: 'Bebidas',
@@ -90,17 +86,20 @@ describe('Product Entity', () => {
 
     product.update({
       status: 'draft',
-      imported_t: '2020-01-01',
       url: 'https://www.google.com',
       brands: 'Pepsi',
       categories: 'Bebidas',
     });
+    console.log(
+      '🚀 ~ file: product.entity.spec.ts:103 ~ it ~ product:',
+      product,
+    );
 
     expect(product).toBeInstanceOf(Product);
 
     expect(product.code).toBe(123);
     expect(product.status).toBe('draft');
-    expect(product.imported_t).toBe('2020-01-01');
+    expect(product.imported_t).toBeDefined();
     expect(product.url).toBe('https://www.google.com');
     expect(product.brands).toBe('Pepsi');
     expect(product.categories).toBe('Bebidas');
