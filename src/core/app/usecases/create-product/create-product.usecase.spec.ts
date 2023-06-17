@@ -57,4 +57,21 @@ describe('Create Product UseCase', () => {
       createProductUseCase.execute({ ...payload, code: undefined }),
     ).rejects.toThrow('Invalid product code "undefined"');
   });
+
+  // should update product if product already exists
+  it('should update product if product already exists', async () => {
+    await createProductUseCase.execute(payload);
+
+    const productUpdated = {
+      ...payload,
+      last_modified_t: new Date().getTime() + 1000,
+    };
+
+    await createProductUseCase.execute(productUpdated);
+
+    const products = productRepository['products'];
+
+    expect(products).toHaveLength(1);
+    expect(products[0]).toEqual(productUpdated);
+  });
 });
