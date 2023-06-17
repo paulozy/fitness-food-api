@@ -70,4 +70,8 @@ export class Product {
 
     return true;
   }
+
+  public update(props: Partial<ProductProps>): void {
+    Object.assign(this, props);
+  }
 }
