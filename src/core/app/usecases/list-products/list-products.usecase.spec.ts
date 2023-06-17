@@ -1,3 +1,4 @@
+import { Product } from '@core/domain/entities/product.entity';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
 import { faker } from '@faker-js/faker';
 import { InMemoryProductRepository } from '@test/repositories/in-memory-product-repository';
@@ -14,31 +15,33 @@ describe('List Products UseCase', () => {
       const status =
         Number(faker.random.numeric(2)) > 0 ? 'published' : 'draft';
 
-      productRepository.create({
-        code: Number(faker.random.numeric(10)),
-        status,
-        imported_t: faker.date.past().toISOString(),
-        url: faker.internet.url(),
-        brands: faker.commerce.productName(),
-        categories: faker.commerce.productName(),
-        labels: faker.commerce.productName(),
-        cities: faker.address.city(),
-        purchase_places: faker.address.city(),
-        stores: faker.address.city(),
-        ingredients_text: faker.commerce.productDescription(),
-        traces: faker.commerce.productDescription(),
-        serving_size: faker.commerce.productDescription(),
-        serving_quantity: Number(faker.random.numeric(2)),
-        nutriscore_score: Number(faker.random.numeric(2)),
-        nutriscore_grade: faker.commerce.productDescription(),
-        main_category: faker.commerce.productDescription(),
-        image_url: faker.internet.url(),
-        created_t: faker.date.past().getTime(),
-        last_modified_t: faker.date.past().getTime(),
-        product_name: faker.commerce.productName(),
-        quantity: faker.commerce.productName(),
-        creator: faker.internet.userName(),
-      });
+      productRepository.create(
+        Product.create({
+          code: Number(faker.random.numeric(10)),
+          status,
+          imported_t: faker.date.past().toISOString(),
+          url: faker.internet.url(),
+          brands: faker.commerce.productName(),
+          categories: faker.commerce.productName(),
+          labels: faker.commerce.productName(),
+          cities: faker.address.city(),
+          purchase_places: faker.address.city(),
+          stores: faker.address.city(),
+          ingredients_text: faker.commerce.productDescription(),
+          traces: faker.commerce.productDescription(),
+          serving_size: faker.commerce.productDescription(),
+          serving_quantity: Number(faker.random.numeric(2)),
+          nutriscore_score: Number(faker.random.numeric(2)),
+          nutriscore_grade: faker.commerce.productDescription(),
+          main_category: faker.commerce.productDescription(),
+          image_url: faker.internet.url(),
+          created_t: faker.date.past().getTime(),
+          last_modified_t: faker.date.past().getTime(),
+          product_name: faker.commerce.productName(),
+          quantity: faker.commerce.productName(),
+          creator: faker.internet.userName(),
+        }),
+      );
     }
 
     listProductsUseCase = new ListProductsUseCase(productRepository);
