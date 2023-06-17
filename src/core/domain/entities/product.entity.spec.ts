@@ -57,4 +57,52 @@ describe('Product Entity', () => {
     expect(product.quantity).toBe('200ml');
     expect(product.creator).toBe('admin');
   });
+
+  it('should be possible update a product', () => {
+    const created_t = new Date().getTime();
+    const last_modified_t = new Date().getTime();
+
+    const product = Product.create({
+      code: 123,
+      status: 'ok',
+      imported_t: '2020-01-01',
+      url: 'https://www.google.com',
+      brands: 'Coca Cola',
+      categories: 'Bebidas',
+      labels: 'Sem açucar',
+      cities: 'São Paulo',
+      purchase_places: 'Supermercado',
+      stores: 'Supermercado',
+      ingredients_text: 'Açucar, agua, gas',
+      traces: 'Açucar',
+      serving_size: '200ml',
+      serving_quantity: 1,
+      nutriscore_score: 10,
+      nutriscore_grade: 'A',
+      main_category: 'Bebidas',
+      image_url: 'https://www.google.com',
+      created_t,
+      last_modified_t,
+      product_name: 'Coca Cola',
+      quantity: '200ml',
+      creator: 'admin',
+    });
+
+    product.update({
+      status: 'draft',
+      imported_t: '2020-01-01',
+      url: 'https://www.google.com',
+      brands: 'Pepsi',
+      categories: 'Bebidas',
+    });
+
+    expect(product).toBeInstanceOf(Product);
+
+    expect(product.code).toBe(123);
+    expect(product.status).toBe('draft');
+    expect(product.imported_t).toBe('2020-01-01');
+    expect(product.url).toBe('https://www.google.com');
+    expect(product.brands).toBe('Pepsi');
+    expect(product.categories).toBe('Bebidas');
+  });
 });
