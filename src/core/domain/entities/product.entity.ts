@@ -72,6 +72,9 @@ export class Product {
   }
 
   public update(props: Partial<ProductProps>): void {
-    Object.assign(this, props);
+    Object.assign(this, {
+      ...props,
+      last_modified_t: new Date().getTime(),
+    });
   }
 }
