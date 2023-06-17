@@ -1,9 +1,15 @@
+import { Replace } from '@core/utils/replace';
 import { InvalidProductCodeError } from '../@errors/invalid-product-code-error';
+import { InvalidStatusError } from '../@errors/invalid-status-error';
+
+enum ProductStatus {
+  PUBLISHED = 'published',
+  DRAFT = 'draft',
+  TRASH = 'trash',
+}
 
 interface ProductProps {
   code: number;
-  status: string;
-  imported_t: string;
   url: string;
   creator: string;
   created_t: number;
@@ -53,6 +59,9 @@ export class Product {
 
   private constructor(props: ProductProps) {
     Object.assign(this, props);
+
+    this.status = ProductStatus.PUBLISHED;
+    this.imported_t = new Date().toISOString();
   }
 
   public static create(props: ProductProps): Product {
@@ -71,7 +80,19 @@ export class Product {
     return true;
   }
 
-  public update(props: Partial<ProductProps>): void {
+  private validateStatus(status: string): void {
+    if (!Object.values(ProductStatus).includes(status as ProductStatus)) {
+      throw new InvalidStatusError(status);
+    }
+  }
+
+  public update(
+    props: Partial<Replace<ProductProps, { status?: string }>>,
+  ): void {
+    if (props.status) {
+      this.validateStatus(props.status);
+    }
+
     Object.assign(this, {
       ...props,
       last_modified_t: new Date().getTime(),
