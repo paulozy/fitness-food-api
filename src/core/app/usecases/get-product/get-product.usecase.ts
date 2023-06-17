@@ -14,8 +14,13 @@ export class GetProductUseCase {
 
       return product;
     } catch (error) {
-      console.log(error);
-      throw new Error('Unexpected error');
+      console.error(error);
+      switch (error.constructor) {
+        case ProductNotFoundError:
+          throw error;
+        default:
+          throw new Error('Unexpected error');
+      }
     }
   }
 }
