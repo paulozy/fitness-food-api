@@ -19,7 +19,11 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     const skip = (page - 1) * limit;
     const take = skip + limit;
 
-    return this.products.slice(skip, take);
+    const products = this.products.filter(
+      (product) => product.status === 'published',
+    );
+
+    return products.slice(skip, take);
   }
 
   async get(code: number): Promise<Product> {
@@ -32,7 +36,10 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
   }
 
   async delete(code: number): Promise<void> {
-    const index = this.products.findIndex((product) => product.code === code);
-    this.products.splice(index, 1);
+    const product = this.products.find((p) => p.code === code);
+    product.status = 'trash';
+
+    const index = this.products.findIndex((p) => p.code === product.code);
+    this.products[index] = product;
   }
 }
