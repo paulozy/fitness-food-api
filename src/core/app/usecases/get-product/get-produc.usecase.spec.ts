@@ -45,4 +45,10 @@ describe('Get Product UseCase', () => {
 
     expect(product).toBeTruthy();
   });
+
+  it('should be throw an error when product not found', async () => {
+    await expect(getProductUseCase.execute(999999)).rejects.toThrow(
+      'Product with code "999999" not found',
+    );
+  });
 });
