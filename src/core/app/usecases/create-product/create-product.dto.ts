@@ -1,7 +1,5 @@
 export interface CreateProductDTO {
   code: number;
-  status: string;
-  imported_t: string;
   url: string;
   brands: string;
   categories: string;
