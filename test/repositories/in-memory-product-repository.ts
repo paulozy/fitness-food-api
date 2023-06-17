@@ -30,4 +30,9 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     const index = this.products.findIndex((p) => p.code === product.code);
     this.products[index] = product;
   }
+
+  async delete(code: number): Promise<void> {
+    const index = this.products.findIndex((product) => product.code === code);
+    this.products.splice(index, 1);
+  }
 }
