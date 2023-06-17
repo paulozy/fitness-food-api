@@ -39,7 +39,7 @@ describe('Create Product UseCase', () => {
   it('should be possible create a new product', async () => {
     await createProductUseCase.execute(payload);
 
-    const products = await productRepository.list();
+    const products = productRepository['products'];
 
     expect(products).toHaveLength(1);
     expect(products[0]).toEqual(payload);
@@ -49,7 +49,7 @@ describe('Create Product UseCase', () => {
     await createProductUseCase.execute(payload);
     await createProductUseCase.execute(payload);
 
-    expect(await productRepository.list()).toHaveLength(1);
+    expect(productRepository['products']).toHaveLength(1);
   });
 
   it('should not be possible create a product with empty code', async () => {
