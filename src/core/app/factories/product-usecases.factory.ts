@@ -5,7 +5,7 @@ import { ListProductsUseCase } from '@core/app/usecases/list-products/list-produ
 import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
 
-export class UseCasesFactory {
+export class ProductUseCasesFactory {
   static create(productRepository: ProductRepositoryInterface) {
     const listProducts = new ListProductsUseCase(productRepository);
     const getProduct = new GetProductUseCase(productRepository);
