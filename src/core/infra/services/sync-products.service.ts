@@ -1,5 +1,6 @@
 import { CreateProductUseCase } from '@core/app/usecases/create-product/create-product.usecase';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
 import { createReadStream } from 'fs';
@@ -10,20 +11,24 @@ import * as zlib from 'zlib';
 export class SyncProductsService {
   private readonly logger = new Logger(SyncProductsService.name);
 
-  constructor(private readonly createProductUseCase: CreateProductUseCase) {}
+  constructor(
+    private readonly createProductUseCase: CreateProductUseCase,
+    public configService: ConfigService,
+  ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT) //
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async sync() {
-    const fetchFiles = await fetch(
-      'https://challenges.coode.sh/food/data/json/index.txt',
-    );
+    const COODESH_FILES_URL =
+      this.configService.get<string>('COODESH_FILES_URL');
+
+    const fetchFiles = await fetch(`${COODESH_FILES_URL}/index.txt`);
 
     const filesPlainText = await fetchFiles.text();
     const files = filesPlainText.trim().split('\n');
 
     files.forEach((file) => {
       exec(
-        `curl -k -L -s https://challenges.coode.sh/food/data/json/${file} > ./tmp/${file}`,
+        `curl -k -L -s ${COODESH_FILES_URL}/${file} > ./tmp/${file}`,
         async (error) => {
           if (error) {
             this.logger.error(error);
