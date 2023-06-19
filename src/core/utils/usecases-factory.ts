@@ -1,3 +1,4 @@
+import { CreateProductUseCase } from '@core/app/usecases/create-product/create-product.usecase';
 import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-product.usecase';
 import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
 import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
@@ -10,12 +11,14 @@ export class UseCasesFactory {
     const getProduct = new GetProductUseCase(productRepository);
     const deleteProduct = new DeleteProductUseCase(productRepository);
     const updateProduct = new UpdateProductUseCase(productRepository);
+    const createProduct = new CreateProductUseCase(productRepository);
 
     return {
       listProducts,
       getProduct,
       deleteProduct,
       updateProduct,
+      createProduct,
     };
   }
 }
