@@ -7,7 +7,7 @@ import {
 export class InMemoryProductRepository implements ProductRepositoryInterface {
   products: Product[] = [];
 
-  async exists(code: number): Promise<boolean> {
+  async exists(code: string): Promise<boolean> {
     return this.products.some((product) => product.code === code);
   }
 
@@ -26,7 +26,7 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     return products.slice(skip, take);
   }
 
-  async get(code: number): Promise<Product> {
+  async get(code: string): Promise<Product> {
     return this.products.find((product) => product.code === code);
   }
 
@@ -35,7 +35,7 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     this.products[index] = product;
   }
 
-  async delete(code: number): Promise<void> {
+  async delete(code: string): Promise<void> {
     const product = this.products.find((p) => p.code === code);
     product.status = 'trash';
 
