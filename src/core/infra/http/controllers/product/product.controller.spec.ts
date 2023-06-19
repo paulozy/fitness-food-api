@@ -67,4 +67,9 @@ describe('Product Controller', () => {
     const products = await controller.list({});
     expect(products).toHaveLength(10);
   });
+
+  it('should list products with query params pagination', async () => {
+    const products = await controller.list({ page: 2, limit: 5 });
+    expect(products).toHaveLength(5);
+  });
 });
