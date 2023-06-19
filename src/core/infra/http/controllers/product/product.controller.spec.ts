@@ -1,3 +1,4 @@
+import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
 import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
 import { Product } from '@core/domain/entities/product.entity';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
@@ -14,9 +15,11 @@ describe('Product Controller', () => {
     productRepository = new InMemoryProductRepository();
 
     for (let i = 0; i < 10; i++) {
+      const code = i === 0 ? '123456' : String(faker.random.numeric(10));
+
       productRepository.create(
         Product.create({
-          code: String(faker.random.numeric(10)),
+          code,
           url: faker.internet.url(),
           brands: faker.commerce.productName(),
           categories: faker.commerce.productName(),
@@ -44,6 +47,7 @@ describe('Product Controller', () => {
 
   beforeEach(async () => {
     const listProducts = new ListProductsUseCase(productRepository);
+    const getProduct = new GetProductUseCase(productRepository);
 
     const module = await Test.createTestingModule({
       controllers: [ProductController],
@@ -52,6 +56,10 @@ describe('Product Controller', () => {
         {
           provide: ListProductsUseCase,
           useValue: listProducts,
+        },
+        {
+          provide: GetProductUseCase,
+          useValue: getProduct,
         },
       ],
     }).compile();
@@ -85,5 +93,10 @@ describe('Product Controller', () => {
       hasNextPage: false,
       hasPreviousPage: true,
     });
+  });
+
+  it('should get product by code', async () => {
+    const product = await controller.get('123456');
+    expect(product).toBeDefined();
   });
 });
