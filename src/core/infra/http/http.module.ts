@@ -7,6 +7,7 @@ import { UseCasesFactory } from '../../utils/usecases-factory';
 import { DatabaseModule } from '../database/database.module';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { PrismaProductRepository } from '../database/prisma/repositories/prisma-products-repository';
+import { ProductController } from './controllers/product/product.controller';
 
 const prismaProductRepository = new PrismaProductRepository(
   new PrismaService(),
@@ -16,6 +17,7 @@ const { listProducts, getProduct, deleteProduct, updateProduct } =
   UseCasesFactory.create(prismaProductRepository);
 
 @Module({
+  controllers: [ProductController],
   imports: [DatabaseModule],
   providers: [
     {
