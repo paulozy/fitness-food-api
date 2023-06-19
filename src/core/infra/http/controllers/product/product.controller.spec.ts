@@ -99,4 +99,8 @@ describe('Product Controller', () => {
     const product = await controller.get('123456');
     expect(product).toBeDefined();
   });
+
+  it('should throw error if product not found', async () => {
+    await expect(controller.get('123')).rejects.toThrow();
+  });
 });
