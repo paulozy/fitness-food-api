@@ -43,20 +43,20 @@ describe('List Products UseCase', () => {
   });
 
   it('should be possible list all products', async () => {
-    const products = await listProductsUseCase.execute({});
+    const { data } = await listProductsUseCase.execute({});
 
-    expect(products).toHaveLength(10);
+    expect(data).toHaveLength(10);
   });
 
   it('should be possible list all products with pagination', async () => {
-    let products = await listProductsUseCase.execute({
+    const { data } = await listProductsUseCase.execute({
       page: 1,
       limit: 5,
     });
 
-    expect(products).toHaveLength(5);
+    expect(data).toHaveLength(5);
 
-    products = await listProductsUseCase.execute({
+    const { data: products } = await listProductsUseCase.execute({
       page: 2,
       limit: 5,
     });
