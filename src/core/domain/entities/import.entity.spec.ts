@@ -7,6 +7,7 @@ describe('Import Entity', () => {
     const import_ = Import.create({
       status: 'SUCCESS',
       created_at,
+      file: 'file.csv',
     });
 
     expect(import_).toBeInstanceOf(Import);
@@ -22,6 +23,7 @@ describe('Import Entity', () => {
       id: '123',
       status: 'SUCCESS',
       created_at,
+      file: 'file.csv',
     });
 
     expect(import_).toBeInstanceOf(Import);

@@ -8,12 +8,14 @@ enum ImportStatus {
 
 interface ImportProps {
   id?: string;
+  file: string;
   status: string;
   created_at: string;
 }
 
 export class Import {
   id: string;
+  file: string;
   status: string;
   created_at: string;
 
