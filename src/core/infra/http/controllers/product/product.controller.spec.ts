@@ -113,4 +113,8 @@ describe('Product Controller', () => {
   it('should delete product by code', async () => {
     await expect(controller.delete('123456')).resolves.toBeUndefined();
   });
+
+  it('should throw error if product not found', async () => {
+    await expect(controller.delete('123')).rejects.toThrow();
+  });
 });
