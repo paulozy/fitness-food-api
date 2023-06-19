@@ -1,14 +1,19 @@
 import { CreateProductUseCase } from '@core/app/usecases/create-product/create-product.usecase';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
 import { createReadStream } from 'fs';
-import { resolve } from 'path';
 import * as readline from 'readline';
 import * as zlib from 'zlib';
 
+@Injectable()
 export class SyncProductsService {
+  private readonly logger = new Logger(SyncProductsService.name);
+
   constructor(private readonly createProductUseCase: CreateProductUseCase) {}
 
-  async execute() {
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT) //
+  async sync() {
     const fetchFiles = await fetch(
       'https://challenges.coode.sh/food/data/json/index.txt',
     );
@@ -21,13 +26,13 @@ export class SyncProductsService {
         `curl -k -L -s https://challenges.coode.sh/food/data/json/${file} > ./tmp/${file}`,
         async (error) => {
           if (error) {
-            console.error(error);
+            this.logger.error(error);
             return;
           }
 
-          const stream = createReadStream(
-            resolve(__dirname, `../../../../tmp/${file}`),
-          ).pipe(zlib.createGunzip());
+          const stream = createReadStream(`./tmp/${file}`).pipe(
+            zlib.createGunzip(),
+          );
 
           const rl = readline.createInterface({
             input: stream,
