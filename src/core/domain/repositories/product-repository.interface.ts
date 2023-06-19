@@ -6,10 +6,10 @@ export interface ListProductsInput {
 }
 
 export abstract class ProductRepositoryInterface {
-  abstract exists(code: number): Promise<boolean>;
+  abstract exists(code: string): Promise<boolean>;
   abstract create(product: Product): Promise<void>;
   abstract list(data: ListProductsInput): Promise<Product[]>;
-  abstract get(code: number): Promise<Product>;
+  abstract get(code: string): Promise<Product>;
   abstract save(product: Product): Promise<void>;
-  abstract delete(code: number): Promise<void>;
+  abstract delete(code: string): Promise<void>;
 }
