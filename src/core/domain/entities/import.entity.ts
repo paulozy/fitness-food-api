@@ -1,3 +1,4 @@
+import { randomUUID as uuid } from 'crypto';
 import { InvalidStatusError } from '../@errors/invalid-status-error';
 
 enum ImportStatus {
@@ -17,7 +18,11 @@ export class Import {
   created_at: string;
 
   private constructor(props: ImportProps) {
-    Object.assign(this, props);
+    const id = props.id ?? uuid();
+    Object.assign(this, {
+      ...props,
+      id,
+    });
   }
 
   static create(props: ImportProps): Import {
