@@ -6,7 +6,7 @@ import { UpdateProductDTO } from './update-product.dto';
 export class UpdateProductUseCase {
   constructor(private readonly productRepository: ProductRepositoryInterface) {}
 
-  async execute(code: number, data: UpdateProductDTO): Promise<void> {
+  async execute(code: string, data: UpdateProductDTO): Promise<void> {
     try {
       const productExists = await this.productRepository.exists(code);
 
