@@ -169,4 +169,13 @@ describe('Product Controller', () => {
       }),
     );
   });
+
+  it('should throw error if product not found', async () => {
+    await expect(
+      controller.update('123', {
+        brands: 'Test',
+        quantity: 'Test',
+      }),
+    ).rejects.toThrow();
+  });
 });
