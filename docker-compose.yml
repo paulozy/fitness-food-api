@@ -4,7 +4,7 @@ services:
   app:
     container_name: fitness-app
     image: node:18.16.0-alpine3.16
-    command: sh -c "yarn install && yarn migrate:run && tail -f /dev/null"
+    command: sh -c "apk --no-cache add curl && yarn install && yarn migrate:run && tail -f /dev/null"
     working_dir: /usr/src/app
     ports:
       - "3000:3000"
