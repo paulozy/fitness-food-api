@@ -1,3 +1,4 @@
+import { CreateImportUseCase } from '@core/app/usecases/create-import/create-import.usecase';
 import { CreateProductUseCase } from '@core/app/usecases/create-product/create-product.usecase';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,8 +13,9 @@ export class SyncProductsService {
   private readonly logger = new Logger(SyncProductsService.name);
 
   constructor(
-    private readonly createProductUseCase: CreateProductUseCase,
     public configService: ConfigService,
+    private readonly createProductUseCase: CreateProductUseCase,
+    private readonly createImportUseCase: CreateImportUseCase,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -31,6 +33,11 @@ export class SyncProductsService {
         `curl -k -L -s ${COODESH_FILES_URL}/${file} > ./tmp/${file}`,
         async (error) => {
           if (error) {
+            await this.createImportUseCase.execute({
+              status: 'FAILED',
+              file,
+            });
+
             this.logger.error(error);
             return;
           }
@@ -86,6 +93,11 @@ export class SyncProductsService {
 
           stream.on('close', () => {
             exec(`rm ./tmp/${file}`);
+          });
+
+          await this.createImportUseCase.execute({
+            status: 'SUCCESS',
+            file,
           });
         },
       );
