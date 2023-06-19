@@ -6,12 +6,12 @@ export class ListProductsUseCase {
 
   async execute({ page = 1, limit = 10 }: ListProductsUseCaseDTO) {
     try {
-      const products = await this.productRepository.list({
+      const { data, pagination } = await this.productRepository.list({
         page,
         limit,
       });
 
-      return products;
+      return { data, pagination };
     } catch (error) {
       console.log(error);
       throw new Error('Unexpected error');
