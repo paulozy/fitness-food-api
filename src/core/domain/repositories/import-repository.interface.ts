@@ -17,5 +17,6 @@ export interface ListImportsOutput {
 }
 
 export abstract class ImportRepositoryInterface {
+  abstract create(data: Import): Promise<void>;
   abstract list(input: ListImportsInput): Promise<ListImportsOutput>;
 }
