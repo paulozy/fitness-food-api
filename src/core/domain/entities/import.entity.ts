@@ -10,7 +10,7 @@ interface ImportProps {
   id?: string;
   file: string;
   status: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export class Import {
@@ -21,9 +21,12 @@ export class Import {
 
   private constructor(props: ImportProps) {
     const id = props.id ?? uuid();
+    const created_at = props.created_at ?? String(new Date().getTime());
+
     Object.assign(this, {
       ...props,
       id,
+      created_at,
     });
   }
 
