@@ -9,11 +9,11 @@ enum ProductStatus {
 }
 
 interface ProductProps {
-  code: number;
+  code: string;
   url: string;
   creator: string;
-  created_t: number;
-  last_modified_t: number;
+  created_t: string;
+  last_modified_t: string;
   product_name: string;
   quantity: string;
   brands: string;
@@ -25,21 +25,21 @@ interface ProductProps {
   ingredients_text: string;
   traces: string;
   serving_size: string;
-  serving_quantity: number;
-  nutriscore_score: number;
+  serving_quantity: string;
+  nutriscore_score: string;
   nutriscore_grade: string;
   main_category: string;
   image_url: string;
 }
 
 export class Product {
-  code: number;
+  code: string;
   status: string;
   imported_t: string;
   url: string;
   creator: string;
-  created_t: number;
-  last_modified_t: number;
+  created_t: string;
+  last_modified_t: string;
   product_name: string;
   quantity: string;
   brands: string;
@@ -51,8 +51,8 @@ export class Product {
   ingredients_text: string;
   traces: string;
   serving_size: string;
-  serving_quantity: number;
-  nutriscore_score: number;
+  serving_quantity: string;
+  nutriscore_score: string;
   nutriscore_grade: string;
   main_category: string;
   image_url: string;
