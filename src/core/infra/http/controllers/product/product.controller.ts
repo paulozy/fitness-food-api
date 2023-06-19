@@ -2,7 +2,6 @@ import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-p
 import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
 import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
 import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
-import { UpdateSingupValidatorFactory } from '@core/infra/validators/update-product-validator';
 import {
   Body,
   Controller,
@@ -16,6 +15,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UpdateProductRules } from '../../dtos/update-product.dto';
+import { UpdateSingupValidatorFactory } from '../../validators/update-product-validator';
 
 @Controller('products')
 export class ProductController {

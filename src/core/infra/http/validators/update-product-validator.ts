@@ -1,5 +1,5 @@
 import { ClassValidatorFields } from '@core/@shared/infra/validators/class-validator-fields';
-import { UpdateProductRules } from '../http/dtos/update-product.dto';
+import { UpdateProductRules } from '../dtos/update-product.dto';
 
 export class UpdateProductValidator extends ClassValidatorFields<UpdateProductRules> {
   validate(data: UpdateProductRules): boolean {
