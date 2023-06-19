@@ -69,6 +69,9 @@ export class PrismaProductRepository implements ProductRepositoryInterface {
   }
 
   async delete(code: string): Promise<void> {
-    await this.prisma.product.delete({ where: { code } });
+    await this.prisma.product.update({
+      where: { code },
+      data: { status: 'trash' },
+    });
   }
 }
