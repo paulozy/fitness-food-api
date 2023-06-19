@@ -64,12 +64,26 @@ describe('Product Controller', () => {
   });
 
   it('should list products without query params', async () => {
-    const products = await controller.list({});
-    expect(products).toHaveLength(10);
+    const { data, pagination } = await controller.list({});
+    expect(data).toHaveLength(10);
+    expect(pagination).toEqual({
+      page: 1,
+      total: 10,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    });
   });
 
   it('should list products with query params pagination', async () => {
-    const products = await controller.list({ page: 2, limit: 5 });
-    expect(products).toHaveLength(5);
+    const { data, pagination } = await controller.list({ page: 2, limit: 5 });
+    expect(data).toHaveLength(5);
+    expect(pagination).toEqual({
+      page: 2,
+      total: 10,
+      totalPages: 2,
+      hasNextPage: false,
+      hasPreviousPage: true,
+    });
   });
 });
