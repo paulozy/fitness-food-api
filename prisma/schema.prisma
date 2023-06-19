@@ -38,3 +38,12 @@ model Product {
 
   @@map("products")
 }
+
+model Import {
+  id        String @id
+  status    String
+  created_t String
+  file      String
+
+  @@map("imports")
+}
