@@ -13,7 +13,7 @@ describe('Get Product UseCase', () => {
 
     productRepository.create(
       Product.create({
-        code: 123456,
+        code: '123456',
         url: faker.internet.url(),
         brands: faker.commerce.productName(),
         categories: faker.commerce.productName(),
@@ -24,13 +24,13 @@ describe('Get Product UseCase', () => {
         ingredients_text: faker.commerce.productDescription(),
         traces: faker.commerce.productDescription(),
         serving_size: faker.commerce.productDescription(),
-        serving_quantity: Number(faker.random.numeric(2)),
-        nutriscore_score: Number(faker.random.numeric(2)),
+        serving_quantity: String(faker.random.numeric(2)),
+        nutriscore_score: String(faker.random.numeric(2)),
         nutriscore_grade: faker.commerce.productDescription(),
         main_category: faker.commerce.productDescription(),
         image_url: faker.internet.url(),
-        created_t: faker.date.past().getTime(),
-        last_modified_t: faker.date.past().getTime(),
+        created_t: String(faker.date.past().getTime()),
+        last_modified_t: String(faker.date.past().getTime()),
         product_name: faker.commerce.productName(),
         quantity: faker.commerce.productName(),
         creator: faker.internet.userName(),
@@ -41,13 +41,13 @@ describe('Get Product UseCase', () => {
   });
 
   it('should be possible get a product by code', async () => {
-    const product = await getProductUseCase.execute(123456);
+    const product = await getProductUseCase.execute('123456');
 
     expect(product).toBeTruthy();
   });
 
   it('should be throw an error when product not found', async () => {
-    await expect(getProductUseCase.execute(999999)).rejects.toThrow(
+    await expect(getProductUseCase.execute('999999')).rejects.toThrow(
       'Product with code "999999" not found',
     );
   });

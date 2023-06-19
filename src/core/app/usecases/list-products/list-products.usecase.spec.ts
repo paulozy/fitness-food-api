@@ -14,7 +14,7 @@ describe('List Products UseCase', () => {
     for (let i = 0; i < 10; i++) {
       productRepository.create(
         Product.create({
-          code: Number(faker.random.numeric(10)),
+          code: String(faker.random.numeric(10)),
           url: faker.internet.url(),
           brands: faker.commerce.productName(),
           categories: faker.commerce.productName(),
@@ -25,13 +25,13 @@ describe('List Products UseCase', () => {
           ingredients_text: faker.commerce.productDescription(),
           traces: faker.commerce.productDescription(),
           serving_size: faker.commerce.productDescription(),
-          serving_quantity: Number(faker.random.numeric(2)),
-          nutriscore_score: Number(faker.random.numeric(2)),
+          serving_quantity: String(faker.random.numeric(2)),
+          nutriscore_score: String(faker.random.numeric(2)),
           nutriscore_grade: faker.commerce.productDescription(),
           main_category: faker.commerce.productDescription(),
           image_url: faker.internet.url(),
-          created_t: faker.date.past().getTime(),
-          last_modified_t: faker.date.past().getTime(),
+          created_t: String(faker.date.past().getTime()),
+          last_modified_t: String(faker.date.past().getTime()),
           product_name: faker.commerce.productName(),
           quantity: faker.commerce.productName(),
           creator: faker.internet.userName(),
