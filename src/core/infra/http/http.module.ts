@@ -9,7 +9,7 @@ import { PrismaService } from '../database/prisma/prisma.service';
 import { PrismaProductRepository } from '../database/prisma/repositories/prisma-products-repository';
 import { ProductController } from './controllers/product/product.controller';
 
-const prismaProductRepository = new PrismaProductRepository(
+export const prismaProductRepository = new PrismaProductRepository(
   new PrismaService(),
 );
 
