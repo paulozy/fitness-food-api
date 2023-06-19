@@ -1,6 +1,7 @@
 import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-product.usecase';
 import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
 import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
+import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
 import { Product } from '@core/domain/entities/product.entity';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
 import { faker } from '@faker-js/faker';
@@ -50,6 +51,7 @@ describe('Product Controller', () => {
     const listProducts = new ListProductsUseCase(productRepository);
     const getProduct = new GetProductUseCase(productRepository);
     const deleteProduct = new DeleteProductUseCase(productRepository);
+    const updateProduct = new UpdateProductUseCase(productRepository);
 
     const module = await Test.createTestingModule({
       controllers: [ProductController],
@@ -66,6 +68,10 @@ describe('Product Controller', () => {
         {
           provide: DeleteProductUseCase,
           useValue: deleteProduct,
+        },
+        {
+          provide: UpdateProductUseCase,
+          useValue: updateProduct,
         },
       ],
     }).compile();
@@ -116,5 +122,51 @@ describe('Product Controller', () => {
 
   it('should throw error if product not found', async () => {
     await expect(controller.delete('123')).rejects.toThrow();
+  });
+
+  it('should update product by code', async () => {
+    const product = await controller.update('123456', {
+      brands: 'Test',
+      categories: 'Test',
+      labels: 'Test',
+      cities: 'Test',
+      purchase_places: 'Test',
+      stores: 'Test',
+      ingredients_text: 'Test',
+      traces: 'Test',
+      serving_size: 'Test',
+      serving_quantity: 'Test',
+      nutriscore_score: 'Test',
+      nutriscore_grade: 'Test',
+      main_category: 'Test',
+      image_url: 'Test',
+      product_name: 'Test',
+      quantity: 'Test',
+    });
+
+    expect(product).toBeUndefined();
+
+    const updatedProduct = await controller.get('123456');
+
+    expect(updatedProduct).toEqual(
+      expect.objectContaining({
+        brands: 'Test',
+        categories: 'Test',
+        labels: 'Test',
+        cities: 'Test',
+        purchase_places: 'Test',
+        stores: 'Test',
+        ingredients_text: 'Test',
+        traces: 'Test',
+        serving_size: 'Test',
+        serving_quantity: 'Test',
+        nutriscore_score: 'Test',
+        nutriscore_grade: 'Test',
+        main_category: 'Test',
+        image_url: 'Test',
+        product_name: 'Test',
+        quantity: 'Test',
+      }),
+    );
   });
 });
