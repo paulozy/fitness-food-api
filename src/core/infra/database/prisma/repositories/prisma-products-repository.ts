@@ -1,8 +1,10 @@
 import { Product } from '@core/domain/entities/product.entity';
 import {
   ListProductsInput,
+  ListProductsOutput,
   ProductRepositoryInterface,
 } from '@core/domain/repositories/product-repository.interface';
+import { paginate } from 'paginate-arrays-js';
 import { ProductMapper } from '../mappers/product.mapper';
 import { PrismaService } from '../prisma.service';
 
@@ -24,13 +26,30 @@ export class PrismaProductRepository implements ProductRepositoryInterface {
     await this.prisma.product.create({ data: rawProduct });
   }
 
-  async list({ page, limit }: ListProductsInput): Promise<Product[]> {
+  async list({ page, limit }: ListProductsInput): Promise<ListProductsOutput> {
     const products = await this.prisma.product.findMany({
-      skip: page * limit,
-      take: limit,
+      where: {
+        status: 'published',
+      },
     });
 
-    return products.map(ProductMapper.toDomain);
+    const { data, pagination } = paginate({
+      page,
+      url: '',
+      data: products,
+      perPage: limit,
+    });
+
+    return {
+      data: data.map(ProductMapper.toDomain),
+      pagination: {
+        page: pagination.currentPage,
+        total: pagination.total,
+        totalPages: pagination.totalPage,
+        hasNextPage: pagination.hasNextPage,
+        hasPreviousPage: pagination.hasPrevPage,
+      },
+    };
   }
 
   async get(code: string): Promise<Product> {
