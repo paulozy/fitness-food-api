@@ -2,6 +2,7 @@ import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-p
 import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
 import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
 import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
+import { KeyGuard } from '@core/infra/auth/guards/key.guard';
 import {
   Body,
   Controller,
@@ -13,6 +14,7 @@ import {
   Param,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UpdateProductRules } from '../../dtos/update-product.dto';
 import { UpdateSingupValidatorFactory } from '../../validators/update-product-validator';
@@ -48,6 +50,7 @@ export class ProductController {
   }
 
   @Delete('/:code')
+  @UseGuards(KeyGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('code') code: string) {
     await this.deleteProduct.execute(code);
@@ -56,6 +59,7 @@ export class ProductController {
   }
 
   @Put('/:code')
+  @UseGuards(KeyGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(@Param('code') code: string, @Body() body: UpdateProductRules) {
     const validator = UpdateSingupValidatorFactory.create();

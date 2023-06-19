@@ -5,6 +5,7 @@ import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-p
 import { Product } from '@core/domain/entities/product.entity';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
 import { faker } from '@faker-js/faker';
+import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { InMemoryProductRepository } from '@test/repositories/in-memory-product-repository';
 import { ProductController } from './product.controller';
@@ -73,6 +74,11 @@ describe('Product Controller', () => {
           provide: UpdateProductUseCase,
           useValue: updateProduct,
         },
+      ],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
       ],
     }).compile();
 
