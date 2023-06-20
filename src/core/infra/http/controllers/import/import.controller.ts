@@ -8,13 +8,19 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('imports')
 @Controller('imports')
 export class ImportController {
   constructor(private readonly listImports: ListImportsUseCase) {}
 
   @Get()
   @UseGuards(KeyGuard)
+  @ApiOperation({
+    summary: 'List all imports',
+    description: 'List all imports',
+  })
   @HttpCode(HttpStatus.OK)
   async list(@Query() query: any) {
     const { page, limit } = query;

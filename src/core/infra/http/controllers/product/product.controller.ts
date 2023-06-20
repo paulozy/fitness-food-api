@@ -16,9 +16,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateProductRules } from '../../dtos/update-product.dto';
 import { UpdateSingupValidatorFactory } from '../../validators/update-product-validator';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   constructor(
@@ -29,8 +31,15 @@ export class ProductController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'List all products',
+    description: 'List all products',
+  })
   @HttpCode(HttpStatus.OK)
-  async list(@Query() query: any) {
+  async list(
+    @Query()
+    query: any,
+  ) {
     const { page, limit } = query;
 
     const products = await this.listProducts.execute({
@@ -42,6 +51,10 @@ export class ProductController {
   }
 
   @Get('/:code')
+  @ApiOperation({
+    summary: 'Get a product',
+    description: 'Get a product by code',
+  })
   @HttpCode(HttpStatus.OK)
   async get(@Param('code') code: string) {
     const product = await this.getProduct.execute(code);
@@ -51,6 +64,10 @@ export class ProductController {
 
   @Delete('/:code')
   @UseGuards(KeyGuard)
+  @ApiOperation({
+    summary: 'Delete a product',
+    description: 'Delete a product by code',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('code') code: string) {
     await this.deleteProduct.execute(code);
@@ -60,6 +77,10 @@ export class ProductController {
 
   @Put('/:code')
   @UseGuards(KeyGuard)
+  @ApiOperation({
+    summary: 'Update a product',
+    description: 'Update a product by code',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(@Param('code') code: string, @Body() body: UpdateProductRules) {
     const validator = UpdateSingupValidatorFactory.create();
