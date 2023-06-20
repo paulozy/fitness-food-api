@@ -3,9 +3,31 @@ version: '3'
 services:
   app:
     container_name: fitness-app
-    build: .
+    image: node:18.16.0-alpine3.16
+    command: sh -c "apk --no-cache add curl && yarn install && yarn migrate:run && yarn start:dev"
+    working_dir: /usr/src/app
     ports:
       - "3000:3000"
       - "5555:5555"
     volumes:
       - .:/usr/src/app
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    container_name: fitness-db
+    image: postgres:12.1-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fitness
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - ./.docker/postgres-data:/var/lib/postgresql/data

@@ -14,7 +14,7 @@ describe('List Products UseCase', () => {
     for (let i = 0; i < 10; i++) {
       productRepository.create(
         Product.create({
-          code: Number(faker.random.numeric(10)),
+          code: String(faker.random.numeric(10)),
           url: faker.internet.url(),
           brands: faker.commerce.productName(),
           categories: faker.commerce.productName(),
@@ -25,13 +25,13 @@ describe('List Products UseCase', () => {
           ingredients_text: faker.commerce.productDescription(),
           traces: faker.commerce.productDescription(),
           serving_size: faker.commerce.productDescription(),
-          serving_quantity: Number(faker.random.numeric(2)),
-          nutriscore_score: Number(faker.random.numeric(2)),
+          serving_quantity: String(faker.random.numeric(2)),
+          nutriscore_score: String(faker.random.numeric(2)),
           nutriscore_grade: faker.commerce.productDescription(),
           main_category: faker.commerce.productDescription(),
           image_url: faker.internet.url(),
-          created_t: faker.date.past().getTime(),
-          last_modified_t: faker.date.past().getTime(),
+          created_t: String(faker.date.past().getTime()),
+          last_modified_t: String(faker.date.past().getTime()),
           product_name: faker.commerce.productName(),
           quantity: faker.commerce.productName(),
           creator: faker.internet.userName(),
@@ -43,20 +43,20 @@ describe('List Products UseCase', () => {
   });
 
   it('should be possible list all products', async () => {
-    const products = await listProductsUseCase.execute({});
+    const { data } = await listProductsUseCase.execute({});
 
-    expect(products).toHaveLength(10);
+    expect(data).toHaveLength(10);
   });
 
   it('should be possible list all products with pagination', async () => {
-    let products = await listProductsUseCase.execute({
+    const { data } = await listProductsUseCase.execute({
       page: 1,
       limit: 5,
     });
 
-    expect(products).toHaveLength(5);
+    expect(data).toHaveLength(5);
 
-    products = await listProductsUseCase.execute({
+    const { data: products } = await listProductsUseCase.execute({
       page: 2,
       limit: 5,
     });

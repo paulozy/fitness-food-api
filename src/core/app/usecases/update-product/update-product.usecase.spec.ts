@@ -13,7 +13,7 @@ describe('Update Product UseCase', () => {
     productRepository = new InMemoryProductRepository();
 
     product = Product.create({
-      code: 123456,
+      code: '123456',
       url: faker.internet.url(),
       brands: faker.commerce.productName(),
       categories: faker.commerce.productName(),
@@ -24,13 +24,13 @@ describe('Update Product UseCase', () => {
       ingredients_text: faker.commerce.productDescription(),
       traces: faker.commerce.productDescription(),
       serving_size: faker.commerce.productDescription(),
-      serving_quantity: Number(faker.random.numeric(2)),
-      nutriscore_score: Number(faker.random.numeric(2)),
+      serving_quantity: String(faker.random.numeric(2)),
+      nutriscore_score: String(faker.random.numeric(2)),
       nutriscore_grade: faker.commerce.productDescription(),
       main_category: faker.commerce.productDescription(),
       image_url: faker.internet.url(),
-      created_t: faker.date.past().getTime(),
-      last_modified_t: faker.date.past().getTime(),
+      created_t: String(faker.date.past().getTime()),
+      last_modified_t: String(faker.date.past().getTime()),
       product_name: faker.commerce.productName(),
       quantity: faker.commerce.productName(),
       creator: faker.internet.userName(),
@@ -60,7 +60,7 @@ describe('Update Product UseCase', () => {
 
   it('should not be possible update a product if not exists', async () => {
     await expect(
-      updateProductUseCase.execute(999999, {
+      updateProductUseCase.execute('999999', {
         brands: 'Coca Cola',
         categories: 'Bebidas',
       }),

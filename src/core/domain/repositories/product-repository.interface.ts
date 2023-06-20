@@ -5,11 +5,22 @@ export interface ListProductsInput {
   limit: number;
 }
 
+export interface ListProductsOutput {
+  data: Product[];
+  pagination: {
+    page: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
 export abstract class ProductRepositoryInterface {
-  abstract exists(code: number): Promise<boolean>;
+  abstract exists(code: string): Promise<boolean>;
   abstract create(product: Product): Promise<void>;
-  abstract list(data: ListProductsInput): Promise<Product[]>;
-  abstract get(code: number): Promise<Product>;
+  abstract list(data: ListProductsInput): Promise<ListProductsOutput>;
+  abstract get(code: string): Promise<Product>;
   abstract save(product: Product): Promise<void>;
-  abstract delete(code: number): Promise<void>;
+  abstract delete(code: string): Promise<void>;
 }

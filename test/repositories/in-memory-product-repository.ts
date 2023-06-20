@@ -1,13 +1,15 @@
 import { Product } from '@core/domain/entities/product.entity';
 import {
   ListProductsInput,
+  ListProductsOutput,
   ProductRepositoryInterface,
 } from '@core/domain/repositories/product-repository.interface';
+import { paginate } from 'paginate-arrays-js';
 
 export class InMemoryProductRepository implements ProductRepositoryInterface {
   products: Product[] = [];
 
-  async exists(code: number): Promise<boolean> {
+  async exists(code: string): Promise<boolean> {
     return this.products.some((product) => product.code === code);
   }
 
@@ -15,18 +17,31 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     this.products.push(product);
   }
 
-  async list({ page, limit }: ListProductsInput): Promise<Product[]> {
-    const skip = (page - 1) * limit;
-    const take = skip + limit;
-
+  async list({ page, limit }: ListProductsInput): Promise<ListProductsOutput> {
     const products = this.products.filter(
       (product) => product.status === 'published',
     );
 
-    return products.slice(skip, take);
+    const { data, pagination } = paginate({
+      page,
+      url: 'http://localhost:3000/products',
+      data: products,
+      perPage: limit,
+    });
+
+    return {
+      data: data as Product[],
+      pagination: {
+        page,
+        total: pagination.total,
+        totalPages: pagination.totalPage,
+        hasNextPage: pagination.hasNextPage,
+        hasPreviousPage: pagination.hasPrevPage,
+      },
+    };
   }
 
-  async get(code: number): Promise<Product> {
+  async get(code: string): Promise<Product> {
     return this.products.find((product) => product.code === code);
   }
 
@@ -35,7 +50,7 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
     this.products[index] = product;
   }
 
-  async delete(code: number): Promise<void> {
+  async delete(code: string): Promise<void> {
     const product = this.products.find((p) => p.code === code);
     product.status = 'trash';
 

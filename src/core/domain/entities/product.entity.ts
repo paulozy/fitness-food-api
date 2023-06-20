@@ -9,11 +9,13 @@ enum ProductStatus {
 }
 
 interface ProductProps {
-  code: number;
+  code: string;
+  status?: string;
+  imported_t?: string;
   url: string;
   creator: string;
-  created_t: number;
-  last_modified_t: number;
+  created_t: string;
+  last_modified_t: string;
   product_name: string;
   quantity: string;
   brands: string;
@@ -25,21 +27,21 @@ interface ProductProps {
   ingredients_text: string;
   traces: string;
   serving_size: string;
-  serving_quantity: number;
-  nutriscore_score: number;
+  serving_quantity: string;
+  nutriscore_score: string;
   nutriscore_grade: string;
   main_category: string;
   image_url: string;
 }
 
 export class Product {
-  code: number;
+  code: string;
   status: string;
   imported_t: string;
   url: string;
   creator: string;
-  created_t: number;
-  last_modified_t: number;
+  created_t: string;
+  last_modified_t: string;
   product_name: string;
   quantity: string;
   brands: string;
@@ -51,17 +53,22 @@ export class Product {
   ingredients_text: string;
   traces: string;
   serving_size: string;
-  serving_quantity: number;
-  nutriscore_score: number;
+  serving_quantity: string;
+  nutriscore_score: string;
   nutriscore_grade: string;
   main_category: string;
   image_url: string;
 
   private constructor(props: ProductProps) {
-    Object.assign(this, props);
+    const status = props.status || ProductStatus.PUBLISHED;
+    const imported_t = props.imported_t || new Date().getTime().toString();
+    this.validateStatus(status);
 
-    this.status = ProductStatus.PUBLISHED;
-    this.imported_t = new Date().toISOString();
+    Object.assign(this, {
+      ...props,
+      status,
+      imported_t,
+    });
   }
 
   public static create(props: ProductProps): Product {
@@ -95,7 +102,7 @@ export class Product {
 
     Object.assign(this, {
       ...props,
-      last_modified_t: new Date().getTime(),
+      last_modified_t: String(new Date().getTime()),
     });
   }
 }

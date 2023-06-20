@@ -4,7 +4,7 @@ import { ProductNotFoundError } from '../@erros/product-not-found-error';
 export class GetProductUseCase {
   constructor(private readonly productRepository: ProductRepositoryInterface) {}
 
-  async execute(code: number) {
+  async execute(code: string) {
     try {
       const product = await this.productRepository.get(code);
 

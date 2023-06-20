@@ -1,37 +1,41 @@
 import { Product } from './product.entity';
 
 describe('Product Entity', () => {
+  const payload = {
+    code: '123',
+    url: 'https://www.google.com',
+    brands: 'Coca Cola',
+    categories: 'Bebidas',
+    labels: 'Sem açucar',
+    cities: 'São Paulo',
+    purchase_places: 'Supermercado',
+    stores: 'Supermercado',
+    ingredients_text: 'Açucar, agua, gas',
+    traces: 'Açucar',
+    serving_size: '200ml',
+    serving_quantity: '1',
+    nutriscore_score: '10',
+    nutriscore_grade: 'A',
+    main_category: 'Bebidas',
+    image_url: 'https://www.google.com',
+    product_name: 'Coca Cola',
+    quantity: '200ml',
+    creator: 'admin',
+  };
+
   it('should be possible create a new product', () => {
-    const created_t = new Date().getTime();
-    const last_modified_t = new Date().getTime();
+    const created_t = String(new Date().getTime());
+    const last_modified_t = String(new Date().getTime());
 
     const product = Product.create({
-      code: 123,
-      url: 'https://www.google.com',
-      brands: 'Coca Cola',
-      categories: 'Bebidas',
-      labels: 'Sem açucar',
-      cities: 'São Paulo',
-      purchase_places: 'Supermercado',
-      stores: 'Supermercado',
-      ingredients_text: 'Açucar, agua, gas',
-      traces: 'Açucar',
-      serving_size: '200ml',
-      serving_quantity: 1,
-      nutriscore_score: 10,
-      nutriscore_grade: 'A',
-      main_category: 'Bebidas',
-      image_url: 'https://www.google.com',
+      ...payload,
       created_t,
       last_modified_t,
-      product_name: 'Coca Cola',
-      quantity: '200ml',
-      creator: 'admin',
     });
 
     expect(product).toBeInstanceOf(Product);
 
-    expect(product.code).toBe(123);
+    expect(product.code).toBe('123');
     expect(product.status).toBe('published');
     expect(product.imported_t).toBeDefined();
     expect(product.url).toBe('https://www.google.com');
@@ -44,8 +48,8 @@ describe('Product Entity', () => {
     expect(product.ingredients_text).toBe('Açucar, agua, gas');
     expect(product.traces).toBe('Açucar');
     expect(product.serving_size).toBe('200ml');
-    expect(product.serving_quantity).toBe(1);
-    expect(product.nutriscore_score).toBe(10);
+    expect(product.serving_quantity).toBe('1');
+    expect(product.nutriscore_score).toBe('10');
     expect(product.nutriscore_grade).toBe('A');
     expect(product.main_category).toBe('Bebidas');
     expect(product.image_url).toBe('https://www.google.com');
@@ -57,31 +61,13 @@ describe('Product Entity', () => {
   });
 
   it('should be possible update a product', () => {
-    const created_t = new Date().getTime();
-    const last_modified_t = new Date().getTime();
+    const created_t = String(new Date().getTime());
+    const last_modified_t = String(new Date().getTime());
 
     const product = Product.create({
-      code: 123,
-      url: 'https://www.google.com',
-      brands: 'Coca Cola',
-      categories: 'Bebidas',
-      labels: 'Sem açucar',
-      cities: 'São Paulo',
-      purchase_places: 'Supermercado',
-      stores: 'Supermercado',
-      ingredients_text: 'Açucar, agua, gas',
-      traces: 'Açucar',
-      serving_size: '200ml',
-      serving_quantity: 1,
-      nutriscore_score: 10,
-      nutriscore_grade: 'A',
-      main_category: 'Bebidas',
-      image_url: 'https://www.google.com',
+      ...payload,
       created_t,
       last_modified_t,
-      product_name: 'Coca Cola',
-      quantity: '200ml',
-      creator: 'admin',
     });
 
     product.update({
@@ -90,14 +76,10 @@ describe('Product Entity', () => {
       brands: 'Pepsi',
       categories: 'Bebidas',
     });
-    console.log(
-      '🚀 ~ file: product.entity.spec.ts:103 ~ it ~ product:',
-      product,
-    );
 
     expect(product).toBeInstanceOf(Product);
 
-    expect(product.code).toBe(123);
+    expect(product.code).toBe('123');
     expect(product.status).toBe('draft');
     expect(product.imported_t).toBeDefined();
     expect(product.url).toBe('https://www.google.com');
