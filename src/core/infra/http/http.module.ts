@@ -10,6 +10,7 @@ import { DatabaseModule } from '../database/database.module';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { PrismaImportRepository } from '../database/prisma/repositories/prisma-imports-repository';
 import { PrismaProductRepository } from '../database/prisma/repositories/prisma-products-repository';
+import { ApplicationController } from './controllers/application/application.controller';
 import { ImportController } from './controllers/import/import.controller';
 import { ProductController } from './controllers/product/product.controller';
 
@@ -26,9 +27,10 @@ const { listProducts, getProduct, deleteProduct, updateProduct } =
 const { listImports } = ImportUseCasesFactory.create(prismaImportRepository);
 
 @Module({
-  controllers: [ProductController, ImportController],
+  controllers: [ApplicationController, ProductController, ImportController],
   imports: [DatabaseModule],
   providers: [
+    PrismaService,
     {
       provide: ListProductsUseCase,
       useValue: listProducts,

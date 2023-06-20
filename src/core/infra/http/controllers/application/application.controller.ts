@@ -3,7 +3,9 @@ import { PrismaService } from '@core/infra/database/prisma/prisma.service';
 import { checkDatabaseHealthy } from '@core/utils/check-database-helthy';
 import { getMemoryUsage } from '@core/utils/get-memory-usage';
 import { Controller, Get, Logger } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Application Details')
 @Controller()
 export class ApplicationController {
   logger = new Logger(ApplicationController.name);
