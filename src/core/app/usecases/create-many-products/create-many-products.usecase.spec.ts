@@ -24,4 +24,17 @@ describe('Create Many Products UseCase', () => {
 
     expect(productRepository['products']).toHaveLength(100);
   });
+
+  it('should update product if already exists', async () => {
+    const payloads = createManyProductsPayloadFactory(3);
+
+    await createManyProductsUseCase.execute({
+      products: payloads,
+    });
+    await createManyProductsUseCase.execute({
+      products: payloads,
+    });
+
+    expect(productRepository['products']).toHaveLength(3);
+  });
 });
