@@ -4,10 +4,12 @@ import {
   ListProductsOutput,
   ProductRepositoryInterface,
 } from '@core/domain/repositories/product-repository.interface';
+import { Injectable } from '@nestjs/common';
 import { paginate } from 'paginate-arrays-js';
 import { ProductMapper } from '../mappers/product.mapper';
 import { PrismaService } from '../prisma.service';
 
+@Injectable()
 export class PrismaProductRepository implements ProductRepositoryInterface {
   constructor(private readonly prisma: PrismaService) {}
 

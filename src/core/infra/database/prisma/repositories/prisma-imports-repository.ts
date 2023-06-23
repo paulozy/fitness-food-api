@@ -4,10 +4,12 @@ import {
   ListImportsInput,
   ListImportsOutput,
 } from '@core/domain/repositories/import-repository.interface';
+import { Injectable } from '@nestjs/common';
 import { paginate } from 'paginate-arrays-js';
 import { ImportMapper } from '../mappers/import.mappert';
 import { PrismaService } from '../prisma.service';
 
+@Injectable()
 export class PrismaImportRepository implements ImportRepositoryInterface {
   constructor(private prisma: PrismaService) {}
 
