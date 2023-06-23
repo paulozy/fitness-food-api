@@ -4,6 +4,7 @@ import { InvalidStatusError } from '../@errors/invalid-status-error';
 enum ImportStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
+  INVALID_FILENAME = 'INVALID_FILENAME',
 }
 
 interface ImportProps {
