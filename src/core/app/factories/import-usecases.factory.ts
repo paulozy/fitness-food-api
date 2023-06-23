@@ -2,14 +2,18 @@ import { ImportRepositoryInterface } from '@core/domain/repositories/import-repo
 import { CreateImportUseCase } from '../usecases/create-import/create-import.usecase';
 import { ListImportsUseCase } from '../usecases/list-imports/list-imports.usecase';
 
-export class ImportUseCasesFactory {
-  static create(importRepository: ImportRepositoryInterface) {
-    const createImport = new CreateImportUseCase(importRepository);
-    const listImports = new ListImportsUseCase(importRepository);
-
-    return {
-      createImport,
-      listImports,
-    };
-  }
+export interface ImportUseCasesInterface {
+  create: CreateImportUseCase;
+  list: ListImportsUseCase;
 }
+
+export const ImportUseCases = {
+  provide: 'ImportUseCases',
+  useFactory: (importRepository: ImportRepositoryInterface) => {
+    return {
+      create: new CreateImportUseCase(importRepository),
+      list: new ListImportsUseCase(importRepository),
+    };
+  },
+  inject: [ImportRepositoryInterface],
+};
