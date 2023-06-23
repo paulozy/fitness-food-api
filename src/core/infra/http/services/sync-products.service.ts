@@ -1,6 +1,6 @@
-import { CreateImportUseCase } from '@core/app/usecases/create-import/create-import.usecase';
-import { CreateProductUseCase } from '@core/app/usecases/create-product/create-product.usecase';
-import { Injectable, Logger } from '@nestjs/common';
+import { ImportUseCasesInterface } from '@core/app/factories/import-usecases.factory';
+import { ProductsUseCasesInterface } from '@core/app/factories/product-usecases.factory';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
@@ -13,13 +13,15 @@ export class SyncProductsService {
   private readonly logger = new Logger(SyncProductsService.name);
 
   constructor(
+    @Inject('ProductUseCases')
+    private productUseCases: ProductsUseCasesInterface,
+    @Inject('ImportUseCases') private importUseCases: ImportUseCasesInterface,
     public configService: ConfigService,
-    private readonly createProductUseCase: CreateProductUseCase,
-    private readonly createImportUseCase: CreateImportUseCase,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async sync() {
+    this.logger.log('Syncing products...');
     const COODESH_FILES_URL =
       this.configService.get<string>('COODESH_FILES_URL');
 
@@ -33,7 +35,7 @@ export class SyncProductsService {
         `curl -k -L -s ${COODESH_FILES_URL}/${file} > ./tmp/${file}`,
         async (error) => {
           if (error) {
-            await this.createImportUseCase.execute({
+            await this.importUseCases.create.execute({
               status: 'FAILED',
               file,
             });
@@ -64,7 +66,7 @@ export class SyncProductsService {
             const product = JSON.parse(line);
             product.code = product.code.replace(/^"/, '');
 
-            await this.createProductUseCase.execute({
+            await this.productUseCases.create.execute({
               code: product.code,
               url: product.url,
               creator: product.creator,
@@ -95,12 +97,14 @@ export class SyncProductsService {
             exec(`rm ./tmp/${file}`);
           });
 
-          await this.createImportUseCase.execute({
+          await this.importUseCases.create.execute({
             status: 'SUCCESS',
             file,
           });
         },
       );
     });
+
+    this.logger.log('Products synced!');
   }
 }
