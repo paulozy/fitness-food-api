@@ -1,4 +1,5 @@
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
+import { CreateManyProductsUseCase } from '../usecases/create-many-products/create-many-products.usecase';
 import { CreateProductUseCase } from '../usecases/create-product/create-product.usecase';
 import { DeleteProductUseCase } from '../usecases/delete-product/delete-product.usecase';
 import { GetProductUseCase } from '../usecases/get-product/get-product.usecase';
@@ -11,6 +12,7 @@ export interface ProductsUseCasesInterface {
   get: GetProductUseCase;
   delete: DeleteProductUseCase;
   update: UpdateProductUseCase;
+  createMany: CreateManyProductsUseCase;
 }
 
 export const ProductsUseCases = {
@@ -22,6 +24,7 @@ export const ProductsUseCases = {
       delete: new DeleteProductUseCase(productRepository),
       update: new UpdateProductUseCase(productRepository),
       create: new CreateProductUseCase(productRepository),
+      createMany: new CreateManyProductsUseCase(productRepository),
     };
   },
   inject: [ProductRepositoryInterface],
