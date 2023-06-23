@@ -21,6 +21,7 @@ lerna-debug.log*
 
 # any
 product.json
+sync.js
 
 # env
 .env
