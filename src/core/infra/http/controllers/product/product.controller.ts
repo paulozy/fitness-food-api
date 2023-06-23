@@ -1,14 +1,10 @@
-import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-product.usecase';
-import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
-import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
-import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
 import { KeyGuard } from '@core/infra/auth/guards/key.guard';
+import { ProductService } from '@core/infra/http/services/product.service';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -23,31 +19,23 @@ import { UpdateSingupValidatorFactory } from '../../validators/update-product-va
 @ApiTags('products')
 @Controller('products')
 export class ProductController {
-  constructor(
-    private readonly listProducts: ListProductsUseCase,
-    private readonly getProduct: GetProductUseCase,
-    private readonly deleteProduct: DeleteProductUseCase,
-    private readonly updateProduct: UpdateProductUseCase,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
   @ApiOperation({
     summary: 'List all products',
     description: 'List all products',
   })
-  @HttpCode(HttpStatus.OK)
   async list(
     @Query()
     query: any,
   ) {
     const { page, limit } = query;
 
-    const products = await this.listProducts.execute({
+    return this.productService.list({
       page,
       limit,
     });
-
-    return products;
   }
 
   @Get('/:code')
@@ -55,11 +43,8 @@ export class ProductController {
     summary: 'Get a product',
     description: 'Get a product by code',
   })
-  @HttpCode(HttpStatus.OK)
   async get(@Param('code') code: string) {
-    const product = await this.getProduct.execute(code);
-
-    return product;
+    return this.productService.get(code);
   }
 
   @Delete('/:code')
@@ -68,11 +53,8 @@ export class ProductController {
     summary: 'Delete a product',
     description: 'Delete a product by code',
   })
-  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('code') code: string) {
-    await this.deleteProduct.execute(code);
-
-    return;
+    return this.productService.delete(code);
   }
 
   @Put('/:code')
@@ -81,7 +63,6 @@ export class ProductController {
     summary: 'Update a product',
     description: 'Update a product by code',
   })
-  @HttpCode(HttpStatus.NO_CONTENT)
   async update(@Param('code') code: string, @Body() body: UpdateProductRules) {
     const validator = UpdateSingupValidatorFactory.create();
     const isValid = validator.validate(body);
@@ -93,6 +74,6 @@ export class ProductController {
       );
     }
 
-    await this.updateProduct.execute(code, body);
+    return this.productService.update(code, body);
   }
 }
