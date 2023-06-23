@@ -19,6 +19,7 @@ export interface ListProductsOutput {
 export abstract class ProductRepositoryInterface {
   abstract exists(code: string): Promise<boolean>;
   abstract create(product: Product): Promise<void>;
+  abstract createMany(products: Product[]): Promise<void>;
   abstract list(data: ListProductsInput): Promise<ListProductsOutput>;
   abstract get(code: string): Promise<Product>;
   abstract save(product: Product): Promise<void>;

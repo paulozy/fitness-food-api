@@ -1,10 +1,11 @@
-import { ListImportsUseCase } from '@core/app/usecases/list-imports/list-imports.usecase';
+import { ImportUseCases } from '@core/app/factories/import-usecases.factory';
 import { Import } from '@core/domain/entities/import.entity';
 import { ImportRepositoryInterface } from '@core/domain/repositories/import-repository.interface';
 import { faker } from '@faker-js/faker';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { InMemoryImportRepository } from '@test/repositories/in-memory-import-repository';
+import { ImportService } from '../../services/import.service';
 import { ImportController } from './import.controller';
 
 describe('Import Controller', () => {
@@ -25,16 +26,15 @@ describe('Import Controller', () => {
   });
 
   beforeEach(async () => {
-    const listImports = new ListImportsUseCase(importRepository);
-
     const module = await Test.createTestingModule({
       controllers: [ImportController],
       providers: [
-        InMemoryImportRepository,
         {
-          provide: ListImportsUseCase,
-          useValue: listImports,
+          provide: ImportRepositoryInterface,
+          useValue: importRepository,
         },
+        ImportService,
+        ImportUseCases,
       ],
       imports: [ConfigModule.forRoot()],
     }).compile();

@@ -14,7 +14,25 @@ export class InMemoryProductRepository implements ProductRepositoryInterface {
   }
 
   async create(product: Product): Promise<void> {
-    this.products.push(product);
+    const exists = await this.exists(product.code);
+
+    if (exists) {
+      this.save(product);
+    } else {
+      this.products.push(product);
+    }
+  }
+
+  async createMany(products: Product[]): Promise<void> {
+    products.forEach(async (product) => {
+      const exists = await this.exists(product.code);
+
+      if (exists) {
+        await this.save(product);
+      } else {
+        await this.create(product);
+      }
+    });
   }
 
   async list({ page, limit }: ListProductsInput): Promise<ListProductsOutput> {

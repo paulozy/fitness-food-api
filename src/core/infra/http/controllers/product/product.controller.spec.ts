@@ -1,13 +1,11 @@
-import { DeleteProductUseCase } from '@core/app/usecases/delete-product/delete-product.usecase';
-import { GetProductUseCase } from '@core/app/usecases/get-product/get-product.usecase';
-import { ListProductsUseCase } from '@core/app/usecases/list-products/list-products.usecase';
-import { UpdateProductUseCase } from '@core/app/usecases/update-product/update-product.usecase';
+import { ProductsUseCases } from '@core/app/factories/product-usecases.factory';
 import { Product } from '@core/domain/entities/product.entity';
 import { ProductRepositoryInterface } from '@core/domain/repositories/product-repository.interface';
 import { faker } from '@faker-js/faker';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { InMemoryProductRepository } from '@test/repositories/in-memory-product-repository';
+import { ProductService } from '../../services/product.service';
 import { ProductController } from './product.controller';
 
 describe('Product Controller', () => {
@@ -49,37 +47,17 @@ describe('Product Controller', () => {
   });
 
   beforeEach(async () => {
-    const listProducts = new ListProductsUseCase(productRepository);
-    const getProduct = new GetProductUseCase(productRepository);
-    const deleteProduct = new DeleteProductUseCase(productRepository);
-    const updateProduct = new UpdateProductUseCase(productRepository);
-
     const module = await Test.createTestingModule({
       controllers: [ProductController],
       providers: [
-        InMemoryProductRepository,
         {
-          provide: ListProductsUseCase,
-          useValue: listProducts,
+          provide: ProductRepositoryInterface,
+          useValue: productRepository,
         },
-        {
-          provide: GetProductUseCase,
-          useValue: getProduct,
-        },
-        {
-          provide: DeleteProductUseCase,
-          useValue: deleteProduct,
-        },
-        {
-          provide: UpdateProductUseCase,
-          useValue: updateProduct,
-        },
+        ProductService,
+        ProductsUseCases,
       ],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-        }),
-      ],
+      imports: [ConfigModule.forRoot()],
     }).compile();
 
     controller = module.get<ProductController>(ProductController);

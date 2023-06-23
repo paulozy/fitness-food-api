@@ -4,10 +4,12 @@ import {
   ListProductsOutput,
   ProductRepositoryInterface,
 } from '@core/domain/repositories/product-repository.interface';
+import { Injectable } from '@nestjs/common';
 import { paginate } from 'paginate-arrays-js';
 import { ProductMapper } from '../mappers/product.mapper';
 import { PrismaService } from '../prisma.service';
 
+@Injectable()
 export class PrismaProductRepository implements ProductRepositoryInterface {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -23,7 +25,24 @@ export class PrismaProductRepository implements ProductRepositoryInterface {
 
   async create(product: Product): Promise<void> {
     const rawProduct = ProductMapper.toPersistence(product);
-    await this.prisma.product.create({ data: rawProduct });
+
+    await this.prisma.product.upsert({
+      where: { code: product.code },
+      update: rawProduct,
+      create: rawProduct,
+    });
+  }
+
+  async createMany(products: Product[]): Promise<void> {
+    products.forEach(async (product) => {
+      const exists = await this.exists(product.code);
+
+      if (exists) {
+        await this.save(product);
+      } else {
+        await this.create(product);
+      }
+    });
   }
 
   async list({ page, limit }: ListProductsInput): Promise<ListProductsOutput> {

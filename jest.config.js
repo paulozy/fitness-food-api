@@ -12,5 +12,6 @@ module.exports = {
     '<rootDir>/dist/',
     '<rootDir>/coverage/',
     '<rootDir>/tmp/',
+    '<rootDir>/.docker/',
   ],
 };
