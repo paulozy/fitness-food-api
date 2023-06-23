@@ -1,110 +1,111 @@
 import { ImportUseCasesInterface } from '@core/app/factories/import-usecases.factory';
 import { ProductsUseCasesInterface } from '@core/app/factories/product-usecases.factory';
+import { validateFilename } from '@core/utils/validate-filename';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { exec } from 'child_process';
-import { createReadStream } from 'fs';
-import * as readline from 'readline';
-import * as zlib from 'zlib';
+import { createReadStream, createWriteStream, unlinkSync } from 'node:fs';
+import { createInterface } from 'node:readline';
+import { pipeline } from 'node:stream';
+import { promisify } from 'node:util';
+import { createGunzip } from 'node:zlib';
+
+const streamPipeline = promisify(pipeline);
 
 @Injectable()
 export class SyncProductsService {
+  private readonly COODESH_FILES_URL: string;
   private readonly logger = new Logger(SyncProductsService.name);
+  private products = [];
 
   constructor(
     @Inject('ProductUseCases')
     private productUseCases: ProductsUseCasesInterface,
     @Inject('ImportUseCases') private importUseCases: ImportUseCasesInterface,
     public configService: ConfigService,
-  ) {}
+  ) {
+    this.COODESH_FILES_URL = this.configService.get('COODESH_FILES_URL');
+  }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async sync() {
-    this.logger.log('Syncing products...');
-    const COODESH_FILES_URL =
-      this.configService.get<string>('COODESH_FILES_URL');
+    this.logger.log('SYNC STARTED!');
 
-    const fetchFiles = await fetch(`${COODESH_FILES_URL}/index.txt`);
+    const fetchFiles = await fetch(`${this.COODESH_FILES_URL}/index.txt`);
 
     const filesPlainText = await fetchFiles.text();
     const files = filesPlainText.trim().split('\n');
 
-    files.forEach((file) => {
-      exec(
-        `curl -k -L -s ${COODESH_FILES_URL}/${file} > ./tmp/${file}`,
-        async (error) => {
-          if (error) {
-            await this.importUseCases.create.execute({
-              status: 'FAILED',
-              file,
-            });
+    for await (const file of files) {
+      const isFilenameValid = validateFilename(file);
 
-            this.logger.error(error);
-            return;
-          }
+      if (!isFilenameValid) {
+        await this.importUseCases.create.execute({
+          file,
+          status: 'INVALID_FILENAME',
+        });
 
-          const stream = createReadStream(`./tmp/${file}`).pipe(
-            zlib.createGunzip(),
-          );
+        continue;
+      }
 
-          const rl = readline.createInterface({
-            input: stream,
-            output: process.stdout,
-            terminal: false,
-          });
+      await this.syncFile(file);
+    }
 
-          const lines = rl[Symbol.asyncIterator]();
-          let count = 0;
-
-          for await (const line of lines) {
-            if (count >= 100) {
-              stream.close();
-              break;
-            }
-
-            const product = JSON.parse(line);
-            product.code = product.code.replace(/^"/, '');
-
-            await this.productUseCases.create.execute({
-              code: product.code,
-              url: product.url,
-              creator: product.creator,
-              created_t: product.created_t,
-              last_modified_t: product.last_modified_t,
-              product_name: product.product_name,
-              quantity: product.quantity,
-              brands: product.brands,
-              categories: product.categories,
-              labels: product.labels,
-              cities: product.cities,
-              purchase_places: product.purchase_places,
-              stores: product.stores,
-              ingredients_text: product.ingredients_text,
-              traces: product.traces,
-              serving_size: product.serving_size,
-              serving_quantity: product.serving_quantity,
-              nutriscore_score: product.nutriscore_score,
-              nutriscore_grade: product.nutriscore_grade,
-              main_category: product.main_category,
-              image_url: product.image_url,
-            });
-
-            count++;
-          }
-
-          stream.on('close', () => {
-            exec(`rm ./tmp/${file}`);
-          });
-
-          await this.importUseCases.create.execute({
-            status: 'SUCCESS',
-            file,
-          });
-        },
-      );
+    await this.productUseCases.createMany.execute({
+      products: this.products,
     });
 
-    this.logger.log('Products synced!');
+    this.logger.log('SYNC FINISHED!');
+  }
+
+  private async syncFile(file: string) {
+    const res = await fetch(`${this.COODESH_FILES_URL}/${file}`);
+    const stream = res.body as unknown as NodeJS.ReadableStream;
+    const filename = file.replace('.gz', '');
+
+    await streamPipeline(
+      stream,
+      createGunzip(),
+      createWriteStream(`./tmp/${filename}`),
+    ).then(async () => {
+      const rl = createInterface({
+        input: createReadStream(`./tmp/${filename}`),
+        output: process.stdout,
+        terminal: false,
+      });
+
+      let count = 0;
+
+      rl.on('line', (line) => {
+        if (count >= 100) {
+          rl.close();
+          return;
+        }
+
+        const product = JSON.parse(line);
+        product.code = product.code.replace(/^"/, '');
+        this.products.push(product);
+
+        count++;
+      });
+
+      rl.on('close', async () => {
+        await this.importUseCases.create.execute({
+          file,
+          status: 'SUCCESS',
+        });
+
+        unlinkSync(`./tmp/${filename}`);
+      });
+
+      rl.on('error', async (err) => {
+        await this.importUseCases.create.execute({
+          file,
+          status: 'FAILED',
+        });
+
+        this.logger.error(err);
+      });
+    });
   }
 }
